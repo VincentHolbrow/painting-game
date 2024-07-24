@@ -1,11 +1,19 @@
 import pygame
 from settings import *
+import os
 
 tips = [
     pygame.image.load('Assets/Tips/PenTip.png'),
     pygame.image.load('Assets/Tips/BrushTipVert.png'),
     pygame.image.load('Assets/Tips/BrushTipHor.png'),
     pygame.image.load('Assets/Tips/SmallBrushTip.png')
+]
+
+cols = [
+    (0,0,0,255),
+    (180,0,0,255),
+    (0,180,0,255),
+    (255,255,255,255),
 ]
 
 class Canvas():
@@ -16,6 +24,12 @@ class Canvas():
 
         self.edit = False
         self.tip = tips[0]
+        self.tipnum = 0
+        self.tipcol = cols[0]
+        self.colnum = 0
+
+        files = os.listdir('SavedArt')
+        self.canvasnum = len(files)
 
     def update(self, screen):
         if self.edit:
@@ -33,10 +47,24 @@ class Canvas():
                     self.image.blit(self.tip, pos)
     
     def cycletips(self, change):
-        tipnum = tips.index(self.tip) + change
-        if tipnum < 0:
-            tipnum = len(tips) - 1
-        elif tipnum > len(tips) - 1:
-            tipnum = 0
-        print(tipnum)
-        self.tip = tips[tipnum]
+        self.tipnum = self.tipnum + change
+        if self.tipnum < 0:
+            self.tipnum = len(tips) - 1
+        elif self.tipnum > len(tips) - 1:
+            self.tipnum = 0
+        
+        self.tip = pygame.mask.from_surface(tips[self.tipnum])
+        self.tip = self.tip.to_surface(None, None, None, self.tipcol, (0,0,0,0))
+
+    def cyclecols(self, change):
+        self.colnum = self.colnum + change
+        if self.colnum < 0:
+            self.colnum = len(cols) - 1
+        elif self.colnum > len(cols) - 1:
+            self.colnum = 0
+        self.tipcol = cols[self.colnum]
+        self.tip = pygame.mask.from_surface(tips[self.tipnum])
+        self.tip = self.tip.to_surface(None, None, None, self.tipcol, (0,0,0,0))
+
+    def saveimg(self):
+        pygame.image.save(self.image, ('SavedArt/Canvas') + str(self.canvasnum) + '.png')

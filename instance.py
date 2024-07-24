@@ -17,15 +17,22 @@ class Game():
 
         while self.run:
             self.clock.tick(FPS)
+            self.screen.fill((30,30,30))
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
                 if event.type == pygame.KEYDOWN:
-                    print('yup')
                     if event.key == pygame.K_RIGHT:
                         canvas.cycletips(1)
                     if event.key == pygame.K_LEFT:
                         canvas.cycletips(-1)
+                    if event.key == pygame.K_UP:
+                        canvas.cyclecols(1)
+                    if event.key == pygame.K_DOWN:
+                        canvas.cyclecols(-1)
+                    if event.key == pygame.K_s:
+                        canvas.saveimg()
 
             canvas.update(self.screen)
 

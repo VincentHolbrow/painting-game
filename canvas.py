@@ -1,6 +1,5 @@
 import pygame
 from settings import *
-import os
 
 tips = [
     pygame.image.load('Assets/Tips/PenTip.png'),
@@ -17,9 +16,11 @@ cols = [
 ]
 
 class Canvas():
-    def __init__(self, shape):
+    def __init__(self, shape, num, image = None):
         self.shape = pygame.image.load('Assets/Shapes/' + shape + '.png')
         self.image = self.shape
+        if not image == None:
+            self.image.blit(image, (0,0))
         self.rect = self.image.get_rect(center = middlescreen)
 
         self.edit = False
@@ -27,9 +28,7 @@ class Canvas():
         self.tipnum = 0
         self.tipcol = cols[0]
         self.colnum = 0
-
-        files = os.listdir('SavedArt')
-        self.canvasnum = len(files)
+        self.canvasnum = num
 
     def update(self, screen):
         if self.edit:

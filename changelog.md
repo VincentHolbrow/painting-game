@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### V0.0.4
+[+] Can open and cycle between multiple canvases
+
 ### V0.0.3
 [+] Can change colour of tip
 [+] Can save canvases to .png files

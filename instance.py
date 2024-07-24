@@ -20,6 +20,12 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
+                if event.type == pygame.KEYDOWN:
+                    print('yup')
+                    if event.key == pygame.K_RIGHT:
+                        canvas.cycletips(1)
+                    if event.key == pygame.K_LEFT:
+                        canvas.cycletips(-1)
 
             canvas.update(self.screen)
 

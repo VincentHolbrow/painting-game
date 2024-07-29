@@ -1,4 +1,11 @@
 # CHANGELOG
+### V0.0.5
+[+] Added button class, can display text or images
+[+] Added buttons for switching colours and tips
+[+] Added pause menu with quit button (esc to toggle this menu)
+[+] Added tip outline 
+[~] Made background colour vary based on active screen
+[-] Removed keybinds for switching colours and tips
 
 ### V0.0.4
 [+] Can open and cycle between multiple canvases

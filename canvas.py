@@ -8,6 +8,13 @@ tips = [
     pygame.image.load('Assets/Tips/SmallBrushTip.png')
 ]
 
+outlines = [
+    pygame.image.load('Assets/Tips/PenTipOutline.png'),
+    pygame.image.load('Assets/Tips/BrushTipVertOutline.png'),
+    pygame.image.load('Assets/Tips/BrushTipHorOutline.png'),
+    pygame.image.load('Assets/Tips/SmallBrushTipOutline.png')
+]
+
 cols = [
     (0,0,0,255),
     (180,0,0,255),
@@ -29,10 +36,13 @@ class Canvas():
         self.tipcol = cols[0]
         self.colnum = 0
         self.canvasnum = num
+        self.outline = outlines[self.tipnum]
 
     def update(self, screen):
         if self.edit:
             screen.blit(self.image, (self.rect.left, self.rect.top))
+
+            screen.blit(self.outline, pygame.mouse.get_pos())
 
             mousepos = pygame.mouse.get_pos()
             mposadj = (mousepos[0] - self.rect.left, mousepos[1] - self.rect.top)
@@ -54,6 +64,7 @@ class Canvas():
         
         self.tip = pygame.mask.from_surface(tips[self.tipnum])
         self.tip = self.tip.to_surface(None, None, None, self.tipcol, (0,0,0,0))
+        self.outline = outlines[self.tipnum]
 
     def cyclecols(self, change):
         self.colnum = self.colnum + change

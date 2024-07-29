@@ -42,7 +42,7 @@ class Canvas():
         if self.edit:
             screen.blit(self.image, (self.rect.left, self.rect.top))
 
-            screen.blit(self.outline, pygame.mouse.get_pos())
+            screen.blit(self.outline, pygame.mouse.get_pos(), None, pygame.BLEND_RGB_SUB)
 
             mousepos = pygame.mouse.get_pos()
             mposadj = (mousepos[0] - self.rect.left, mousepos[1] - self.rect.top)

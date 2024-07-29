@@ -5,7 +5,7 @@ import os
 from button import Button
 from miscdata import *
 
-screens = ['painting', 'pausemenu']
+screens = ['painting', 'gallery']
 
 canvases = []
 
@@ -17,7 +17,8 @@ def canvasload():
         if not file == '.DS_Store':
             canvases.append(Canvas('Square', file[len(file)-5],\
                                     pygame.image.load('SavedArt/' + file)))
-    canvases.append(Canvas('Square', len(files)-1))
+    if canvases == []:
+        canvases.append(Canvas('Square', len(files)-1))
 
 
 
@@ -30,15 +31,38 @@ class Game():
         # Initializing buttons
         self.nextbrush = Button((250,50), (0, (resolution[1]/5)), (0,0,0), tipnames[0])
         self.nextcol = Button((250,50), (0, (resolution[1]/5 + 70)), (0,0,0), colnames[0])
-        self.quit = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 150), (0,0,0), 'Quit')
+        self.quit = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 150), (50,0,0), 'Quit')
+        self.resume = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 250), (50,0,0), 'Resume')
 
-        self.activescreen = 'painting'
+        self.activescreen = 'gallery'
         self.screencol = (0,0,0)
+        self.gallerypos = 0
 
     def buttonupdate(self):
             self.nextbrush.update(self.screen)
             self.nextcol.update(self.screen)
             self.quit.update(self.screen)
+            self.resume.update(self.screen)
+
+
+    def pausetoggle(self):
+        if self.activescreen != 'pausemenu':
+            self.prevscreen = self.activescreen
+            self.activescreen = 'pausemenu'
+        else:
+            self.activescreen = self.prevscreen
+
+    def draw_gallery(self):
+        chunkwidth = len(canvases)*(resolution[0]/2.5)
+        chunkheight = resolution[1]/1.5
+        backwall = pygame.Surface((round(len(canvases)*(resolution[0]/2.5)), round(resolution[1]/1.5)))
+        backwall.fill((50,50,100))
+        for can in canvases:
+            
+            painting = can.image
+            painting = pygame.transform.scale(painting, (round(resolution[0]/5),round(resolution[0]/5)))
+            backwall.blit(painting, (chunkwidth/4*(int(can.canvasnum)+1), chunkheight/4))
+        self.screen.blit(backwall, (self.gallerypos,0))
 
     def run(self):
         self.run = True
@@ -55,18 +79,41 @@ class Game():
                 if not can == canvas:
                     can.edit = False
 
+            # ----- PAINTING -----
             if self.activescreen == 'painting':
                 canvas.edit = True
+
                 self.nextbrush.hidden = False
                 self.nextcol.hidden = False
                 self.quit.hidden = True
+                self.resume.hidden = True
+
                 self.screencol = (161,102,47)
 
+            # ----- PAUSE MENU -----
             if self.activescreen == 'pausemenu':
                 canvas.edit = False
+                pygame.mouse.get_rel()
+
                 self.nextbrush.hidden = True
                 self.nextcol.hidden = True
                 self.quit.hidden = False
+                self.resume.hidden = False
+
+                self.screencol = (30,30,30)
+
+            # ----- GALLERY -----
+            if self.activescreen == 'gallery':
+                canvas.edit = False
+                pygame.mouse.get_rel()
+
+                self.nextbrush.hidden = True
+                self.nextcol.hidden = True
+                self.quit.hidden = True
+                self.resume.hidden = True
+
+                self.screencol = (30,30,30)
+                self.draw_gallery()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -80,12 +127,14 @@ class Game():
                         activecan = 1
                     if event.key == pygame.K_3:
                         activecan = 2
+                    if event.key == pygame.K_l:
+                        self.activescreen = 'gallery'
+                    if event.key == pygame.K_k:
+                        self.activescreen = 'painting'
                     if event.key == pygame.K_ESCAPE:
-                        if self.activescreen != 'pausemenu':
-                            self.prevscreen = self.activescreen
-                            self.activescreen = 'pausemenu'
-                        else:
-                            self.activescreen = self.prevscreen
+                        self.pausetoggle()
+            if self.resume.clicked():
+                self.pausetoggle()
             if self.nextbrush.clicked():
                 canvas.cycletips(1)
                 self.nextbrush = Button((250,50), (0, resolution[1]/5), (0,0,0), tipnames[canvas.tipnum])
@@ -99,6 +148,8 @@ class Game():
                 canvas.cyclecols(-1)
                 self.nextcol = Button((250,50), (0, resolution[1]/5 + 70), canvas.tipcol, colnames[canvas.colnum])
             if self.quit.clicked():
+                for can in canvases:
+                    can.saveimg()
                 self.run = False
 
             self.buttonupdate()

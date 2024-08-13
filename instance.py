@@ -5,7 +5,7 @@ import os
 from button import Button
 from miscdata import *
 
-screens = ['painting', 'gallery']
+screens = ['painting', 'gallery', 'mainmenu']
 
 canvases = []
 
@@ -31,18 +31,30 @@ class Game():
         # Initializing buttons
         self.nextbrush = Button((250,50), (0, (resolution[1]/5)), (0,0,0), tipnames[0])
         self.nextcol = Button((250,50), (0, (resolution[1]/5 + 70)), (0,0,0), colnames[0])
-        self.quit = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 150), (50,0,0), 'Quit')
+        self.quit = Button((250, 50), (middlescreen[0] - 150, middlescreen[1] + 150), (50,0,0), 'Quit')
         self.resume = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 250), (50,0,0), 'Resume')
+        self.play = Button((250, 50), (middlescreen[0] - 150, middlescreen[1]), (50,0,0), 'Play')
+        self.quit2 = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 150), (50,0,0), 'Quit to menu')
 
-        self.activescreen = 'gallery'
+        self.activescreen = 'mainmenu'
         self.screencol = (0,0,0)
         self.gallerypos = 0
 
     def buttonupdate(self):
-            self.nextbrush.update(self.screen)
-            self.nextcol.update(self.screen)
-            self.quit.update(self.screen)
-            self.resume.update(self.screen)
+        self.nextbrush.update(self.screen)
+        self.nextcol.update(self.screen)
+        self.quit.update(self.screen)
+        self.resume.update(self.screen)
+        self.play.update(self.screen)
+        self.quit2.update(self.screen)
+
+    def buttonhide(self):
+        self.nextbrush.hidden = True
+        self.nextcol.hidden = True
+        self.quit.hidden = True
+        self.resume.hidden = True
+        self.play.hidden = True
+        self.quit2.hidden = True
 
 
     def pausetoggle(self):
@@ -87,12 +99,12 @@ class Game():
                 canvas.edit = True
                 tooltip = 'Press L to exit to gallery, 123 to swap canvases.'
 
+                self.buttonhide()
                 self.nextbrush.hidden = False
                 self.nextcol.hidden = False
-                self.quit.hidden = True
-                self.resume.hidden = True
 
-                self.screencol = (161,102,47)
+
+                self.screencol = (121,62,17)
 
             # ----- PAUSE MENU -----
             if self.activescreen == 'pausemenu':
@@ -100,9 +112,8 @@ class Game():
                 pygame.mouse.get_rel()
                 tooltip = ''
 
-                self.nextbrush.hidden = True
-                self.nextcol.hidden = True
-                self.quit.hidden = False
+                self.buttonhide()
+                self.quit2.hidden = False
                 self.resume.hidden = False
 
                 self.screencol = (30,30,30)
@@ -113,10 +124,7 @@ class Game():
                 pygame.mouse.get_rel()
                 tooltip = 'Press a/d to move, k to enter painting mode.'
 
-                self.nextbrush.hidden = True
-                self.nextcol.hidden = True
-                self.quit.hidden = True
-                self.resume.hidden = True
+                self.buttonhide()
 
                 self.screencol = (30,30,30)
                 self.draw_gallery()
@@ -125,6 +133,18 @@ class Game():
                     self.gallerypos -= 10
                 if keys[pygame.K_a] or keys[pygame.K_LEFT]:
                     self.gallerypos += 10
+
+            # ----- Main Menu -----
+            if self.activescreen == 'mainmenu':
+                canvas.edit = False
+                pygame.mouse.get_rel()
+                tooltip = 'For Ella <3'
+                self.buttonhide()
+                self.play.hidden = False
+                self.quit.hidden = False
+
+                self.screen.blit(bigfont.render('Painting Game', 10, (200,200,0)), (middlescreen[0] - 140, middlescreen[1] - 250))
+                self.screencol = (30,30,30)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -162,6 +182,10 @@ class Game():
                 for can in canvases:
                     can.saveimg()
                 self.run = False
+            if self.quit2.clicked():
+                self.activescreen = 'mainmenu'
+            if self.play.clicked():
+                    self.activescreen = 'gallery'
             canvas.update(self.screen)
             self.screen.blit(mainfont.render(tooltip, 2, (130,130,130)), (resolution[0]-400,resolution[1]-100))
             self.buttonupdate()

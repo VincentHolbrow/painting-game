@@ -1,5 +1,12 @@
 # CHANGELOG
 
+### V0.0.8
+[+] Added a main menu
+[~] Simplified some button stuff but more work ahead on that front
+
+### V0.0.7
+[+] Added some colours and stuff
+
 ### V0.0.6
 [+] Added a little gallery to display your saved paintings
 [~] Made painting save upon pressing 'quit'

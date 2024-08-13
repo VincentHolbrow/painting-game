@@ -56,13 +56,16 @@ class Game():
         chunkwidth = len(canvases)*(resolution[0]/2.5)
         chunkheight = resolution[1]/1.5
         backwall = pygame.Surface((round(len(canvases)*(resolution[0]/2.5)), round(resolution[1]/1.5)))
+        floor = pygame.Surface((round(len(canvases)*(resolution[0]/2.5)), round(resolution[1]/3)))
         backwall.fill((50,50,100))
+        floor.fill((30,30,60))
         for can in canvases:
             
             painting = can.image
             painting = pygame.transform.scale(painting, (round(resolution[0]/5),round(resolution[0]/5)))
             backwall.blit(painting, (chunkwidth/4*(int(can.canvasnum)+1), chunkheight/4))
         self.screen.blit(backwall, (self.gallerypos,0))
+        self.screen.blit(floor, (self.gallerypos, chunkheight))
 
     def run(self):
         self.run = True
@@ -82,6 +85,7 @@ class Game():
             # ----- PAINTING -----
             if self.activescreen == 'painting':
                 canvas.edit = True
+                tooltip = 'Press L to exit to gallery, 123 to swap canvases.'
 
                 self.nextbrush.hidden = False
                 self.nextcol.hidden = False
@@ -94,6 +98,7 @@ class Game():
             if self.activescreen == 'pausemenu':
                 canvas.edit = False
                 pygame.mouse.get_rel()
+                tooltip = ''
 
                 self.nextbrush.hidden = True
                 self.nextcol.hidden = True
@@ -106,6 +111,7 @@ class Game():
             if self.activescreen == 'gallery':
                 canvas.edit = False
                 pygame.mouse.get_rel()
+                tooltip = 'Press a/d to move, k to enter painting mode.'
 
                 self.nextbrush.hidden = True
                 self.nextcol.hidden = True
@@ -114,6 +120,11 @@ class Game():
 
                 self.screencol = (30,30,30)
                 self.draw_gallery()
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+                    self.gallerypos -= 10
+                if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+                    self.gallerypos += 10
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -151,8 +162,9 @@ class Game():
                 for can in canvases:
                     can.saveimg()
                 self.run = False
-
-            self.buttonupdate()
             canvas.update(self.screen)
+            self.screen.blit(mainfont.render(tooltip, 2, (130,130,130)), (resolution[0]-400,resolution[1]-100))
+            self.buttonupdate()
+
 
             pygame.display.flip()

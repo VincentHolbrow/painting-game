@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### V0.0.9
+[+] Added selling of paintings
+
 ### V0.0.8
 [+] Added a main menu
 [~] Simplified some button stuff but more work ahead on that front

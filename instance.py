@@ -35,10 +35,13 @@ class Game():
         self.resume = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 250), (50,0,0), 'Resume')
         self.play = Button((250, 50), (middlescreen[0] - 150, middlescreen[1]), (50,0,0), 'Play')
         self.quit2 = Button((300, 75), (middlescreen[0] - 150, middlescreen[1] - 150), (50,0,0), 'Quit to menu')
+        self.sell = Button((250, 50), (resolution[0] - 275, resolution[1] - 75), (80,80,0), 'Sell Painting')
 
         self.activescreen = 'mainmenu'
         self.screencol = (0,0,0)
         self.gallerypos = 0
+        self.money = 0
+        self.renoun = 0
 
     def buttonupdate(self):
         self.nextbrush.update(self.screen)
@@ -55,6 +58,7 @@ class Game():
         self.resume.hidden = True
         self.play.hidden = True
         self.quit2.hidden = True
+        self.sell.hidden = True
 
 
     def pausetoggle(self):
@@ -102,7 +106,8 @@ class Game():
                 self.buttonhide()
                 self.nextbrush.hidden = False
                 self.nextcol.hidden = False
-
+                self.sell.hidden = False
+                self.sell.update(self.screen, 'Sell Painting ' + str(round(canvas.quality)) + '$')
 
                 self.screencol = (121,62,17)
 
@@ -146,8 +151,11 @@ class Game():
                 self.screen.blit(bigfont.render('Painting Game', 10, (200,200,0)), (middlescreen[0] - 140, middlescreen[1] - 250))
                 self.screencol = (30,30,30)
 
+            # ----- Event Handling -----
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    for can in canvases:
+                        can.saveimg()
                     self.run = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_s:
@@ -185,8 +193,12 @@ class Game():
             if self.quit2.clicked():
                 self.activescreen = 'mainmenu'
             if self.play.clicked():
-                    self.activescreen = 'gallery'
-            canvas.update(self.screen)
+                self.activescreen = 'gallery'
+            if self.sell.clicked():
+                canvasnum = canvas.canvasnum
+                canvases.remove(canvas)
+                canvases.append(Canvas('Square', canvasnum))
+            canvas.update(self.screen, self.renoun)
             self.screen.blit(mainfont.render(tooltip, 2, (130,130,130)), (resolution[0]-400,resolution[1]-100))
             self.buttonupdate()
 

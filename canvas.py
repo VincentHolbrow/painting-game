@@ -47,8 +47,9 @@ class Canvas():
         self.colnum = 0
         self.canvasnum = num
         self.outline = outlines[self.tipnum]
+        self.quality = 0
 
-    def update(self, screen):
+    def update(self, screen, renoun):
         if self.edit:
             screen.blit(self.image, (self.rect.left, self.rect.top))
 
@@ -60,6 +61,8 @@ class Canvas():
             magnitude = round((move[0]**2 + move[1]**2)**0.5)
 
             if pygame.mouse.get_pressed()[0]:
+                if magnitude > 0:
+                    self.quality += (0.1 - 0.001*(self.quality**0.5)/renoun)
                 for i in range(magnitude):
                     pos = round(mposadj[0] - i*(move[0]/magnitude)), \
                         round(mposadj[1] - i*(move[1]/magnitude))

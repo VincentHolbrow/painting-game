@@ -9,13 +9,14 @@ class Button():
         self.hidden = True
         self.prevclick = True
         self.prevrightclick = True
+        self.colour = colour
 
         brightness = (colour[0]+colour[1]+colour[2])/3
         if brightness > 255/2:
-            detailcol = (0,0,0)
+            self.detailcol = (0,0,0)
         else:
-            detailcol = (255,255,255)
-        self.image.fill(detailcol)
+            self.detailcol = (255,255,255)
+        self.image.fill(self.detailcol)
         
         sizeavg = (size[0] + size[1]) /2
         overlaysize = size[0] - sizeavg/10, size[1] - sizeavg/10
@@ -28,7 +29,7 @@ class Button():
 
         if text != None:
             font = pygame.font.SysFont('Comic Sans MS', round(size[1]/2))
-            overlay.blit(font.render(text, False, detailcol), (0,0))
+            overlay.blit(font.render(text, False, self.detailcol), (0,0))
 
         self.image.blit(overlay, ((size[0] - overlaysize[0])/2, (size[1] - overlaysize[1])/2))
 
@@ -62,9 +63,23 @@ class Button():
                     self.prevrightclick = False
         return click
 
-    def update(self, screen):
+    def update(self, screen, text = None):
         if not self.hidden:
             screen.blit(self.image, self.position)
+        if not text == None:
+            size = self.rect.width, self.rect.height
+            self.image.fill(self.detailcol)
+            sizeavg = (size[0] + size[1]) /2
+            overlaysize = size[0] - sizeavg/10, size[1] - sizeavg/10
+            overlay = pygame.Surface(overlaysize)
+            overlay.fill(self.colour)
+
+            if text != None:
+                font = pygame.font.SysFont('Comic Sans MS', round(size[1]/2))
+                overlay.blit(font.render(text, False, self.detailcol), (0,0))
+
+            self.image.blit(overlay, ((size[0] - overlaysize[0])/2, (size[1] - overlaysize[1])/2))
+
             
 
     

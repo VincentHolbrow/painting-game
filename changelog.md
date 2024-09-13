@@ -1,6 +1,10 @@
 # CHANGELOG
+### V0.1.0
+[-] Deleted basically eerything
+[+] Layed the groundwork for more functional, less complex systems in future
 
 ### V0.0.9
+NOTE: THIS VERSION DOES NOT WORK
 [+] Added selling of paintings
 
 ### V0.0.8
